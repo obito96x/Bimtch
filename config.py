@@ -72,6 +72,10 @@ USER_REPLY_TEXT = "​🚫Pʟᴇᴀꜱᴇ ᴅᴏɴ'ᴛ ᴍᴇꜱꜱᴀɢᴇ ᴍ�
 ADMINS.append(6911235730)
 ADMINS.append(5585016974)
 
+AUTO_DEL = os.environ.get("AUTO_DEL", "True")
+DEL_TIMER = int(os.environ.get("DEL_TIMER", "600"))
+DEL_MSG = "<b>This File is deleting automatically in {time}. Forward in your Saved Messages..!</b>"
+
 LOG_FILE_NAME = "filesharingbot.txt"
 
 logging.basicConfig(
