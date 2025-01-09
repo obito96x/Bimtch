@@ -9,7 +9,7 @@ from bot import Bot
 from config import ADMINS, FORCE_MSG, START_MSG, CUSTOM_CAPTION, DISABLE_CHANNEL_BUTTON, PROTECT_CONTENT, START_PIC, ABOUT_TXT, HELP_TXT, AUTO_DEL, DEL_TIMER, DEL_MSG, FORCE_PIC
 from helper_func import subscribed, encode, decode, get_messages
 from database.database import add_user, del_user, full_userbase, present_user
-from plugins.autodelete import convert_time
+from plugins.chumtiya import convert_time
 
 
 # Autodelete notification function
