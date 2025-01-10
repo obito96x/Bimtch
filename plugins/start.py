@@ -6,26 +6,12 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, 
 from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated
 
 from bot import Bot
-from config import ADMINS, FORCE_MSG, START_MSG, CUSTOM_CAPTION, DISABLE_CHANNEL_BUTTON, PROTECT_CONTENT, START_PIC, ABOUT_TXT, HELP_TXT, AUTO_DEL, DEL_TIMER, DEL_MSG, FORCE_PIC
+from config import ADMINS, FORCE_MSG, START_MSG, CUSTOM_CAPTION, DISABLE_CHANNEL_BUTTON, PROTECT_CONTENT, START_PIC, ABOUT_TXT, HELP_TXT, FORCE_PIC
 from helper_func import subscribed, encode, decode, get_messages
 from database.database import add_user, del_user, full_userbase, present_user
-from database.database import present_admin
-from plugins.chumtiya import convert_time
-
-
-# Autodelete notification function
-async def auto_del_notification(client, msg, delay_time):
-    if AUTO_DEL.lower() == "true":
-        await msg.reply_text(DEL_MSG.format(time=convert_time(DEL_TIMER)))
-        await asyncio.sleep(delay_time)
-        await msg.delete()
-
-# Delete message after delay function
-async def delete_message(msg, delay_time):
-    if AUTO_DEL.lower() == "true":
-        await asyncio.sleep(delay_time)
-        await msg.delete()
-        
+async def delete_after_delay(message: Message, delay):
+    await asyncio.sleep(3600)
+    await message.delete()
 
 @Bot.on_message(filters.command('start') & filters.private & subscribed)
 async def start_command(client: Client, message: Message):
@@ -64,7 +50,7 @@ async def start_command(client: Client, message: Message):
                 ids = [int(int(argument[1]) / abs(client.db_channel.id))]
             except:
                 return
-        temp_msg = await message.reply("Loading...")
+        temp_msg = await message.reply("Please wait...⚡")
         try:
             messages = await get_messages(client, ids)
         except:
@@ -85,13 +71,18 @@ async def start_command(client: Client, message: Message):
                 reply_markup = None
 
             try:
-                await msg.copy(chat_id=message.from_user.id, caption = caption, parse_mode = ParseMode.HTML, reply_markup = reply_markup, protect_content=PROTECT_CONTENT)
-                await asyncio.sleep(0.5)
+                if msg and (msg.text or msg.photo or msg.document or msg.video or msg.audio or msg.sticker or msg.voice or msg.animation or msg.video_note or msg.contact or msg.location or msg.venue or msg.poll):
+                    k = await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup, protect_content=PROTECT_CONTENT)
+                    await asyncio.sleep(0.01)
+                    if k is not None:
+                        asyncio.create_task(delete_after_delay(k, 1800))
             except FloodWait as e:
                 await asyncio.sleep(e.x)
-                await msg.copy(chat_id=message.from_user.id, caption = caption, parse_mode = ParseMode.HTML, reply_markup = reply_markup, protect_content=PROTECT_CONTENT)
+                await msg.copy(chat_id=message.from_user.id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup, protect_content=PROTECT_CONTENT)
             except:
                 pass
+        await message.reply_text(f"<b>‼️ Forward the Files to Saved Messages or somewhere else before Downloading it.\n\nIt will get Delete after 1 Hour ‼️</b>")
+        await message.reply_text(f"<b>Join @Animes_Empire for More ⚡</b>")
         return
     else:
         reply_markup=InlineKeyboardMarkup([
@@ -209,6 +200,4 @@ Unsuccessful: <code>{unsuccessful}</code></b>"""
         return await pls_wait.edit(status)
 
     else:
-        msg = await message.reply(REPLY_ERROR)
-        await asyncio.sleep(8)
-        await msg.delete()
+        aqua = 21
